@@ -18,7 +18,8 @@
     "lint:format": "prettier --check .",
     "lint:code": "eslint . --max-warnings=0",
     "lint:types": "tsc --noEmit",
-    "lint": "concurrently -g -c auto -n \"format,code,types\" \"npm run lint:format\" \"npm run lint:code\" \"npm run lint:types\""
+    "lint": "concurrently -g -c auto -n \"format,code,types\" \"npm run lint:format\" \"npm run lint:code\" \"npm run lint:types\"",
+    "test": "bun test"
   },
   "devDependencies": {
     "@standard-schema/spec": "^1.0.0",
@@ -30,7 +31,7 @@
     "prettier-plugin-organize-imports": "^4.1.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.1",
-    "vite": "^6.3.5",
+    "vite": "^7.0.3",
     "zod": "^3.25.67"
   },
   "peerDependencies": {

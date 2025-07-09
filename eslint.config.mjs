@@ -22,7 +22,7 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['eslint.config.mjs'],
+          allowDefaultProject: ['eslint.config.mjs', 'test/*.test.ts'],
         },
         tsconfigRootDir: import.meta.dirname,
       },
@@ -45,6 +45,15 @@ export default tseslint.config(
   {
     files: ['**/*.mjs'],
     extends: [tseslint.configs.disableTypeChecked],
+  },
+
+  /** Testing */
+  {
+    files: ['test/**/*.ts', '**/*.test.ts', '**/*.spec.ts'],
+    rules: {
+      '@typescript-eslint/consistent-type-assertions': 'off',
+      '@typescript-eslint/require-await': 'off',
+    },
   },
 
   /** Prettier */

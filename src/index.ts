@@ -1,15 +1,17 @@
 import { type StandardSchemaV1 } from '@standard-schema/spec'
 import { type Plugin, loadEnv } from 'vite'
 
-const envSchema = (envSchema: StandardSchemaV1): Plugin => {
+const envSchema = <TInput = unknown, TOutput = TInput>(
+  envSchema: StandardSchemaV1<TInput, TOutput>,
+) => {
   const virtualModuleId = 'virtual:env'
   const resolvedVirtualModuleId = `\0${virtualModuleId}`
 
   let validatedEnv: unknown
 
   return {
-    name: 'vite-plugin-env',
-    configResolved: async config => {
+    name: 'vite-plugin-env-schema',
+    async configResolved(config) {
       const env = loadEnv(config.mode, process.cwd(), 'VITE_')
 
       const envVars = Object.fromEntries(
@@ -39,17 +41,17 @@ const envSchema = (envSchema: StandardSchemaV1): Plugin => {
 
       validatedEnv = validationResult.value
     },
-    resolveId: id => {
+    resolveId(id) {
       if (id === virtualModuleId) {
         return resolvedVirtualModuleId
       }
     },
-    load: id => {
+    load(id) {
       if (id === resolvedVirtualModuleId) {
         return `export default ${JSON.stringify(validatedEnv)}`
       }
     },
-  }
+  } satisfies Plugin
 }
 
 export default envSchema
