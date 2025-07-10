@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   /** Settings */
-  [globalIgnores(['dist/'])],
+  [globalIgnores(['dist/', 'example/'])],
 
   /** Basic Config */
   eslint.configs.recommended,

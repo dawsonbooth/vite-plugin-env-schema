@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite Plugin Env Schema Example</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+  </head>
+  <body>
+    <main class="container">
+      <hgroup>
+        <h1>Vite Plugin Env Schema</h1>
+        <p>
+          Build-time environment variable validation with Standard Schema V1
+        </p>
+      </hgroup>
+
+      <article>
+        <header>
+          <h2>Validated Environment Variables</h2>
+          <p>These values were validated and transformed at build time:</p>
+        </header>
+        <div id="env-display"></div>
+      </article>
+
+      <article>
+        <header>
+          <h3>Try It Out</h3>
+        </header>
+        <ul>
+          <li>Check the console for the raw environment object</li>
+          <li>
+            Edit <code>.env</code> with invalid values and rebuild to see
+            validation errors
+          </li>
+          <li>
+            Uncomment different schemas in <code>vite.config.ts</code> to test
+            other libraries
+          </li>
+        </ul>
+      </article>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

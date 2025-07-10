@@ -7,6 +7,8 @@
 
 Build-time environment variable validation and injection for Vite.
 
+[![Open Example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/dawsonbooth/vite-plugin-env-schema/tree/main/example)
+
 ## Why Use This Plugin?
 
 - 🚀 Build-time safety: prevents runtime errors from missing or invalid env vars
