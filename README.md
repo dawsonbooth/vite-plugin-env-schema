@@ -10,19 +10,12 @@ Build-time environment variable validation and injection for Vite.
 
 [![Open Example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/dawsonbooth/vite-plugin-env-schema/tree/main/example)
 
-## Why Use This Plugin?
-
-- 🚀 Build-time safety: prevents runtime errors from missing or invalid env vars
-- 🔄 Broad compatibility: works with Zod, Valibot, ArkType, Effect Schema, and more via Standard Schema V1
-- 🎛️ Zero-config: default prefix `VITE_`, minimal setup
-
 ## Features
 
-- Build-time safety: catches missing or invalid `.env` values before your app runs
-- Broad compatibility: integrate with Zod, Valibot, ArkType, Effect Schema, and more via Standard Schema V1
+- 🚀 Build-time safety: catches missing or invalid `.env` values before your app runs
+- 🔄 Broad compatibility: works with Zod, Valibot, ArkType, Effect Schema, and more via Standard Schema V1
+- 🎛️ Zero-config: minimal setup required
 - Automatic injection: access validated env vars via `import env from 'virtual:env'`
-- Prefix filtering: only loads variables matching your chosen prefix (default `VITE_`)
-- Customizable prefix & broad schema library support built-in
 
 ## Installation
 
