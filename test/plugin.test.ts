@@ -56,120 +56,211 @@ describe('vite-plugin-env-schema', () => {
   })
 
   describe('environment validation', () => {
-    it('should validate environment variables successfully', async () => {
-      const validatedEnv = {
-        API_URL: 'https://api.example.com',
-        PORT: 3000,
-        DEBUG: 'true',
-      }
-      const schema = createMockSchema({ value: validatedEnv })
-
-      mockLoadEnv.mockReturnValue({
-        VITE_API_URL: 'https://api.example.com',
-        VITE_PORT: '3000',
-        VITE_DEBUG: 'true',
-      })
-
-      const plugin = envSchema(schema)
-      const mockConfig = { mode: 'development' } as ResolvedConfig
-
-      await plugin.configResolved.call(null, mockConfig)
-
-      expect(schema['~standard'].validate).toHaveBeenCalledWith({
-        API_URL: 'https://api.example.com',
-        PORT: '3000',
-        DEBUG: 'true',
-      })
-    })
-
-    it('should throw detailed error when validation fails', async () => {
-      const schema = createMockSchema({
-        issues: [{ path: 'API_URL', message: 'Invalid URL format' }],
-      })
-
-      mockLoadEnv.mockReturnValue({
-        VITE_API_URL: 'not-a-valid-url',
-        VITE_PORT: '3000',
-      })
-
-      const plugin = envSchema(schema)
-      const mockConfig = { mode: 'development' } as ResolvedConfig
-
-      try {
-        await plugin.configResolved.call(null, mockConfig)
-        expect().fail('Should have thrown an error')
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error)
-        if (error instanceof Error) {
-          expect(error.message).toContain('Invalid environment configuration')
-          expect(error.message).toContain('API_URL: Invalid URL format')
+    describe('validateOn: config (default)', () => {
+      it('should validate environment variables successfully', async () => {
+        const validatedEnv = {
+          API_URL: 'https://api.example.com',
+          PORT: 3000,
+          DEBUG: 'true',
         }
-      }
-    })
+        const schema = createMockSchema({ value: validatedEnv })
 
-    it('should handle missing environment variables', async () => {
-      const schema = createMockSchema({
-        issues: [{ path: 'API_URL', message: 'Required' }],
-      })
+        mockLoadEnv.mockReturnValue({
+          VITE_API_URL: 'https://api.example.com',
+          VITE_PORT: '3000',
+          VITE_DEBUG: 'true',
+        })
 
-      mockLoadEnv.mockReturnValue({})
+        const plugin = envSchema(schema)
+        const mockConfig = { mode: 'development' } as ResolvedConfig
 
-      const plugin = envSchema(schema)
-      const mockConfig = { mode: 'development' } as ResolvedConfig
-
-      try {
         await plugin.configResolved.call(null, mockConfig)
-        expect().fail('Should have thrown an error')
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error)
-        if (error instanceof Error) {
-          expect(error.message).toContain('Invalid environment configuration')
-          expect(error.message).toContain('API_URL: Required')
+
+        expect(schema['~standard'].validate).toHaveBeenCalledWith({
+          API_URL: 'https://api.example.com',
+          PORT: '3000',
+          DEBUG: 'true',
+        })
+      })
+
+      it('should throw detailed error when validation fails', async () => {
+        const schema = createMockSchema({
+          issues: [{ path: 'API_URL', message: 'Invalid URL format' }],
+        })
+
+        mockLoadEnv.mockReturnValue({
+          VITE_API_URL: 'not-a-valid-url',
+          VITE_PORT: '3000',
+        })
+
+        const plugin = envSchema(schema)
+        const mockConfig = { mode: 'development' } as ResolvedConfig
+
+        try {
+          await plugin.configResolved.call(null, mockConfig)
+          expect().fail('Should have thrown an error')
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error)
+          if (error instanceof Error) {
+            expect(error.message).toContain('Invalid environment configuration')
+            expect(error.message).toContain('API_URL: Invalid URL format')
+          }
         }
-      }
-    })
-
-    it('should handle validation errors with string paths', async () => {
-      const schema = createMockSchema({
-        issues: [{ path: 'API_URL', message: 'Invalid URL format' }],
       })
 
-      mockLoadEnv.mockReturnValue({
-        VITE_API_URL: 'not-a-valid-url',
+      it('should handle missing environment variables', async () => {
+        const schema = createMockSchema({
+          issues: [{ path: 'API_URL', message: 'Required' }],
+        })
+
+        mockLoadEnv.mockReturnValue({})
+
+        const plugin = envSchema(schema)
+        const mockConfig = { mode: 'development' } as ResolvedConfig
+
+        try {
+          await plugin.configResolved.call(null, mockConfig)
+          expect().fail('Should have thrown an error')
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error)
+          if (error instanceof Error) {
+            expect(error.message).toContain('Invalid environment configuration')
+            expect(error.message).toContain('API_URL: Required')
+          }
+        }
       })
 
-      const plugin = envSchema(schema)
-      const mockConfig = { mode: 'development' } as ResolvedConfig
+      it('should handle validation errors with string paths', async () => {
+        const schema = createMockSchema({
+          issues: [{ path: 'API_URL', message: 'Invalid URL format' }],
+        })
 
-      try {
+        mockLoadEnv.mockReturnValue({
+          VITE_API_URL: 'not-a-valid-url',
+        })
+
+        const plugin = envSchema(schema)
+        const mockConfig = { mode: 'development' } as ResolvedConfig
+
+        try {
+          await plugin.configResolved.call(null, mockConfig)
+          expect().fail('Should have thrown an error')
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error)
+          if (error instanceof Error) {
+            expect(error.message).toContain('Invalid environment configuration')
+            expect(error.message).toContain('API_URL: Invalid URL format')
+          }
+        }
+      })
+
+      it('should strip VITE_ prefix from environment variables before validation', async () => {
+        const schema = createMockSchema({ value: { API_URL: 'test' } })
+
+        mockLoadEnv.mockReturnValue({
+          VITE_API_URL: 'https://api.example.com',
+          VITE_DEBUG: 'true',
+          OTHER_VAR: 'ignored',
+        })
+
+        const plugin = envSchema(schema)
+        const mockConfig = { mode: 'development' } as ResolvedConfig
+
         await plugin.configResolved.call(null, mockConfig)
-        expect().fail('Should have thrown an error')
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error)
-        if (error instanceof Error) {
-          expect(error.message).toContain('Invalid environment configuration')
-          expect(error.message).toContain('API_URL: Invalid URL format')
-        }
-      }
+
+        expect(schema['~standard'].validate).toHaveBeenCalledWith({
+          API_URL: 'https://api.example.com',
+          DEBUG: 'true',
+        })
+      })
     })
 
-    it('should strip VITE_ prefix from environment variables before validation', async () => {
-      const schema = createMockSchema({ value: { API_URL: 'test' } })
+    describe('validateOn: load', () => {
+      it('should validate environment variables successfully', async () => {
+        const validatedEnv = {
+          API_URL: 'https://api.example.com',
+          PORT: 3000,
+          DEBUG: 'true',
+        }
+        const schema = createMockSchema({ value: validatedEnv })
 
-      mockLoadEnv.mockReturnValue({
-        VITE_API_URL: 'https://api.example.com',
-        VITE_DEBUG: 'true',
-        OTHER_VAR: 'ignored',
+        mockLoadEnv.mockReturnValue({
+          VITE_API_URL: 'https://api.example.com',
+          VITE_PORT: '3000',
+          VITE_DEBUG: 'true',
+        })
+
+        const plugin = envSchema(schema, { validateOn: 'load' })
+        const mockConfig = { mode: 'development' } as ResolvedConfig
+
+        await plugin.configResolved.call(null, mockConfig)
+        await plugin.load.call(null, '\0virtual:env')
+
+        expect(schema['~standard'].validate).toHaveBeenCalledWith({
+          API_URL: 'https://api.example.com',
+          PORT: '3000',
+          DEBUG: 'true',
+        })
       })
 
-      const plugin = envSchema(schema)
-      const mockConfig = { mode: 'development' } as ResolvedConfig
+      it('should throw detailed error when validation fails', async () => {
+        const schema = createMockSchema({
+          issues: [{ path: 'API_URL', message: 'Invalid URL format' }],
+        })
 
-      await plugin.configResolved.call(null, mockConfig)
+        mockLoadEnv.mockReturnValue({
+          VITE_API_URL: 'not-a-valid-url',
+          VITE_PORT: '3000',
+        })
 
-      expect(schema['~standard'].validate).toHaveBeenCalledWith({
-        API_URL: 'https://api.example.com',
-        DEBUG: 'true',
+        const plugin = envSchema(schema, { validateOn: 'load' })
+        const mockConfig = { mode: 'development' } as ResolvedConfig
+
+        await plugin.configResolved.call(null, mockConfig)
+
+        try {
+          await plugin.load.call(null, '\0virtual:env')
+          expect().fail('Should have thrown an error')
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error)
+          if (error instanceof Error) {
+            expect(error.message).toContain('Invalid environment configuration')
+            expect(error.message).toContain('API_URL: Invalid URL format')
+          }
+        }
+      })
+
+      it('should not validate during configResolved', async () => {
+        const schema = createMockSchema({
+          issues: [{ path: 'API_URL', message: 'Invalid URL format' }],
+        })
+
+        mockLoadEnv.mockReturnValue({
+          VITE_API_URL: 'not-a-valid-url',
+        })
+
+        const plugin = envSchema(schema, { validateOn: 'load' })
+        const mockConfig = { mode: 'development' } as ResolvedConfig
+
+        // This should not throw since validation is deferred to load
+        await plugin.configResolved.call(null, mockConfig)
+        expect(schema['~standard'].validate).not.toHaveBeenCalled()
+      })
+
+      it('should not validate again during load (config mode)', async () => {
+        const schema = createMockSchema({ value: { API_URL: 'test' } })
+        mockLoadEnv.mockReturnValue({ VITE_API_URL: 'https://api.example.com' })
+
+        const plugin = envSchema(schema)
+        const mockConfig = { mode: 'development' } as ResolvedConfig
+
+        // First call during configResolved
+        await plugin.configResolved.call(null, mockConfig)
+        expect(schema['~standard'].validate).toHaveBeenCalledTimes(1)
+
+        // Should not call validate again during load
+        await plugin.load.call(null, '\0virtual:env')
+        expect(schema['~standard'].validate).toHaveBeenCalledTimes(1)
       })
     })
   })
@@ -182,7 +273,7 @@ describe('vite-plugin-env-schema', () => {
       expect(plugin.resolveId.call(null, 'some-other-module')).toBeUndefined()
     })
 
-    it('should generate correct module content for validated environment', async () => {
+    it('should generate correct module content for validated environment (config mode)', async () => {
       const validatedEnv = { API_URL: 'https://api.example.com', DEBUG: 'true' }
       const schema = createMockSchema({ value: validatedEnv })
 
@@ -196,27 +287,55 @@ describe('vite-plugin-env-schema', () => {
         mode: 'development',
       } as ResolvedConfig)
 
-      expect(plugin.load.call(null, '\0virtual:env')).toBe(
+      expect(await plugin.load.call(null, '\0virtual:env')).toBe(
         'export default {"API_URL":"https://api.example.com","DEBUG":"true"}',
       )
     })
 
-    it('should return undefined for non-virtual modules', () => {
-      const plugin = envSchema(createMockSchema({ value: {} }))
-      expect(plugin.load.call(null, 'some-other-module')).toBeUndefined()
+    it('should generate correct module content for validated environment (load mode)', async () => {
+      const validatedEnv = { API_URL: 'https://api.example.com', DEBUG: 'true' }
+      const schema = createMockSchema({ value: validatedEnv })
+
+      mockLoadEnv.mockReturnValue({
+        VITE_API_URL: 'https://api.example.com',
+        VITE_DEBUG: 'true',
+      })
+
+      const plugin = envSchema(schema, { validateOn: 'load' })
+      await plugin.configResolved.call(null, {
+        mode: 'development',
+      } as ResolvedConfig)
+
+      expect(await plugin.load.call(null, '\0virtual:env')).toBe(
+        'export default {"API_URL":"https://api.example.com","DEBUG":"true"}',
+      )
     })
 
-    it('should handle loading virtual module before configResolved', () => {
+    it('should return undefined for non-virtual modules', async () => {
       const plugin = envSchema(createMockSchema({ value: {} }))
-      expect(plugin.load.call(null, '\0virtual:env')).toBe(
-        'export default undefined',
+      expect(await plugin.load.call(null, 'some-other-module')).toBeUndefined()
+    })
+
+    it('should handle loading virtual module before configResolved (config mode)', async () => {
+      const plugin = envSchema(createMockSchema({ value: {} }))
+      expect(await plugin.load.call(null, '\0virtual:env')).toBe(
+        'export default null',
+      )
+    })
+
+    it('should handle loading virtual module before configResolved (load mode)', async () => {
+      const plugin = envSchema(createMockSchema({ value: {} }), {
+        validateOn: 'load',
+      })
+      expect(await plugin.load.call(null, '\0virtual:env')).toBe(
+        'export default null',
       )
     })
   })
 
   describe('loadEnv integration', () => {
     it.each(['production', 'test', 'development'])(
-      'should call loadEnv with mode: %s',
+      'should call loadEnv with mode: %s (config mode)',
       async mode => {
         const schema = createMockSchema({ value: { API_URL: 'test' } })
         mockLoadEnv.mockReturnValue({ VITE_API_URL: 'https://api.example.com' })
@@ -225,6 +344,22 @@ describe('vite-plugin-env-schema', () => {
         const mockConfig = { mode } as ResolvedConfig
 
         await plugin.configResolved.call(null, mockConfig)
+
+        expect(mockLoadEnv).toHaveBeenCalledWith(mode, process.cwd(), 'VITE_')
+      },
+    )
+
+    it.each(['production', 'test', 'development'])(
+      'should call loadEnv with mode: %s (load mode)',
+      async mode => {
+        const schema = createMockSchema({ value: { API_URL: 'test' } })
+        mockLoadEnv.mockReturnValue({ VITE_API_URL: 'https://api.example.com' })
+
+        const plugin = envSchema(schema, { validateOn: 'load' })
+        const mockConfig = { mode } as ResolvedConfig
+
+        await plugin.configResolved.call(null, mockConfig)
+        await plugin.load.call(null, '\0virtual:env')
 
         expect(mockLoadEnv).toHaveBeenCalledWith(mode, process.cwd(), 'VITE_')
       },
