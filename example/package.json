@@ -13,7 +13,7 @@
     "effect": "^3.10.0",
     "valibot": "^1.1.0",
     "vite": "^7.0.3",
-    "vite-plugin-env-schema": "/Users/dawsonbooth/Projects/dawsonbooth/vite-plugin-env-schema/vite-plugin-env-schema-0.1.0.tgz",
+    "vite-plugin-env-schema": "latest",
     "yup": "^1.4.0",
     "zod": "^3.25.67"
   }
