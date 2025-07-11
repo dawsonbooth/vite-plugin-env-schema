@@ -2,7 +2,8 @@
 
 [![npm version](http://img.shields.io/npm/v/vite-plugin-env-schema.svg?style=flat)](https://npmjs.org/package/vite-plugin-env-schema)
 [![downloads](http://img.shields.io/npm/dt/vite-plugin-env-schema.svg?style=flat)](https://npmjs.org/package/vite-plugin-env-schema)
-[![build status](https://github.com/dawsonbooth/vite-plugin-env-schema/workflows/build/badge.svg)](https://github.com/dawsonbooth/vite-plugin-env-schema/actions?workflow=build)
+[![CI](https://github.com/dawsonbooth/vite-plugin-env-schema/workflows/CI/badge.svg)](https://github.com/dawsonbooth/vite-plugin-env-schema/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/dawsonbooth/vite-plugin-env-schema/branch/main/graph/badge.svg)](https://codecov.io/gh/dawsonbooth/vite-plugin-env-schema)
 [![license](https://img.shields.io/npm/l/vite-plugin-env-schema.svg?style=flat)](https://github.com/dawsonbooth/vite-plugin-env-schema/blob/master/LICENSE)
 
 Build-time environment variable validation and injection for Vite.
@@ -60,6 +61,23 @@ Create a `.env` (or `.env.development`, `.env.production`) file:
 ```env
 VITE_API_URL=https://api.example.com
 VITE_DEBUG=true
+```
+
+## Configuration Options
+
+### `validateOn`
+
+Control when environment validation occurs:
+
+- `'config'` (default): Validate during Vite config resolution - provides immediate feedback
+- `'load'`: Validate when the virtual module is loaded - useful for advanced scenarios
+
+```ts
+export default defineConfig({
+  plugins: [
+    envPlugin(envSchema, { validateOn: 'config' }), // default
+  ],
+})
 ```
 
 ## TypeScript Support

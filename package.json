@@ -2,8 +2,27 @@
   "name": "vite-plugin-env-schema",
   "version": "0.1.0",
   "description": "Build-time environment variable validation and injection for Vite",
-  "repository": "https://github.com/dawsonbooth/vite-plugin-env-schema",
+  "keywords": [
+    "vite",
+    "plugin",
+    "environment",
+    "validation",
+    "schema",
+    "env",
+    "standard-schema",
+    "zod",
+    "valibot"
+  ],
+  "homepage": "https://github.com/dawsonbooth/vite-plugin-env-schema#readme",
+  "bugs": {
+    "url": "https://github.com/dawsonbooth/vite-plugin-env-schema/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dawsonbooth/vite-plugin-env-schema.git"
+  },
   "license": "MIT",
+  "author": "Dawson Booth <dawson@dawsonbooth.com>",
   "sideEffects": false,
   "files": [
     "dist"
@@ -19,7 +38,8 @@
     "lint:code": "eslint . --max-warnings=0",
     "lint:types": "tsc --noEmit",
     "lint": "concurrently -g -c auto -n \"format,code,types\" \"npm run lint:format\" \"npm run lint:code\" \"npm run lint:types\"",
-    "test": "bun test"
+    "test": "bun test",
+    "prepublishOnly": "npm run build && npm run lint && npm run test"
   },
   "devDependencies": {
     "@standard-schema/spec": "^1.0.0",
