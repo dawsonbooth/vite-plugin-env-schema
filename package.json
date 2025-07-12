@@ -37,9 +37,9 @@
     "lint:format": "prettier --check .",
     "lint:code": "eslint . --max-warnings=0",
     "lint:types": "tsc --noEmit",
-    "lint": "concurrently -g -c auto -n \"format,code,types\" \"npm run lint:format\" \"npm run lint:code\" \"npm run lint:types\"",
+    "lint": "concurrently -g -c auto -n \"format,code,types\" \"bun run lint:format\" \"bun run lint:code\" \"bun run lint:types\"",
     "test": "bun test",
-    "prepublishOnly": "npm run build && npm run lint && npm run test"
+    "prepublishOnly": "bun run build && bun run lint && bun run test"
   },
   "devDependencies": {
     "@standard-schema/spec": "^1.0.0",
