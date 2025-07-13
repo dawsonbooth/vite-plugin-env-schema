@@ -131,9 +131,19 @@ describe('vite-plugin-env-schema', () => {
       })
 
       it('should handle validation errors with string paths', async () => {
-        const schema = createMockSchema({
+        const baseSchema = createMockSchema({
           issues: [{ path: 'API_URL', message: 'Invalid URL format' }],
         })
+
+        const schema = {
+          ...baseSchema,
+          '~standard': {
+            ...baseSchema['~standard'],
+            validate: mock(async () => ({
+              issues: [{ path: 'API_URL', message: 'Invalid URL format' }],
+            })),
+          },
+        }
 
         mockLoadEnv.mockReturnValue({
           VITE_API_URL: 'not-a-valid-url',
