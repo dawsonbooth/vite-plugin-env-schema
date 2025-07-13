@@ -19,11 +19,6 @@ jobs:
           release-type: node
       - uses: actions/checkout@v4
         if: ${{ steps.release.outputs.release_created }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
-        if: ${{ steps.release.outputs.release_created }}
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -38,4 +33,4 @@ jobs:
           bun lint
           bun test
           bun run build
-          npm publish --provenance
+          bunx npm publish --provenance
