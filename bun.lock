@@ -3,8 +3,10 @@
   "workspaces": {
     "": {
       "name": "vite-plugin-env-schema",
-      "devDependencies": {
+      "dependencies": {
         "@standard-schema/spec": "^1.0.0",
+      },
+      "devDependencies": {
         "@types/bun": "^1.2.18",
         "concurrently": "^9.1.2",
         "eslint": "^9.29.0",
