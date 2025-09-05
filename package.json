@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-env-schema",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build-time environment variable validation and injection for Vite",
   "keywords": [
     "vite",

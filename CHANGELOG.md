@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/dawsonbooth/vite-plugin-env-schema/compare/v1.0.0...v1.0.1) (2025-09-05)
+
+
+### Bug Fixes
+
+* make @standard-schema/spec a proper dependency ([506e4a5](https://github.com/dawsonbooth/vite-plugin-env-schema/commit/506e4a524b92a224daf1660c4b0f1fc43c5efe6c))
+
 ## 1.0.0 (2025-07-13)
 
 
