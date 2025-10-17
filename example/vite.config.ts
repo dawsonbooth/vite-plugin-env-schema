@@ -3,8 +3,8 @@ import envSchema from 'vite-plugin-env-schema'
 
 // Zod Example (default)
 import { z } from 'zod'
-const zodSchema = z.object({
-  API_URL: z.string().url(),
+const schema = z.object({
+  API_URL: z.url(),
   PORT: z.string().transform(Number).pipe(z.number().int().positive()),
   DEBUG: z.string().transform(val => val === 'true'),
   FEATURE_FLAGS: z
@@ -15,7 +15,7 @@ const zodSchema = z.object({
 
 // Valibot Example (uncomment to try)
 // import * as v from 'valibot'
-// const valibotSchema = v.object({
+// const schema = v.object({
 //   API_URL: v.pipe(v.string(), v.url()),
 //   PORT: v.pipe(v.string(), v.transform(Number), v.integer(), v.minValue(1)),
 //   DEBUG: v.pipe(v.string(), v.transform(val => val === 'true')),
@@ -24,7 +24,7 @@ const zodSchema = z.object({
 
 // ArkType Example (uncomment to try)
 // import { type } from 'arktype'
-// const arkTypeSchema = type({
+// const schema = type({
 //   'API_URL': 'string.url',
 //   'PORT': 'string.integer.moreThan(0)',
 //   'DEBUG': 'string.as(boolean)',
@@ -33,7 +33,7 @@ const zodSchema = z.object({
 
 // Effect Schema Example (uncomment to try)
 // import * as S from 'effect/Schema'
-// const effectSchema = S.Struct({
+// const schema = S.Struct({
 //   API_URL: S.String.pipe(S.filter(url => {
 //     try { new URL(url); return true } catch { return false }
 //   })),
@@ -47,7 +47,7 @@ const zodSchema = z.object({
 
 // Yup Example (uncomment to try)
 // import * as yup from 'yup'
-// const yupSchema = yup.object({
+// const schema = yup.object({
 //   API_URL: yup.string().url().required(),
 //   PORT: yup.string().transform(Number).required(),
 //   DEBUG: yup.string().transform(val => val === 'true').required(),
@@ -55,11 +55,5 @@ const zodSchema = z.object({
 // })
 
 export default defineConfig({
-  plugins: [
-    envSchema(zodSchema),
-    // envSchema(valibotSchema)
-    // envSchema(arkTypeSchema)
-    // envSchema(effectSchema)
-    // envSchema(yupSchema)
-  ],
+  plugins: [envSchema(schema)],
 })
