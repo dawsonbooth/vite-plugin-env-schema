@@ -5,7 +5,7 @@ export interface EnvSchemaOptions {
   validateOn?: 'config' | 'load'
 }
 
-const envSchema = <TInput = unknown, TOutput = TInput>(
+const envSchema = <TInput extends Record<string, string>, TOutput = TInput>(
   envSchema: StandardSchemaV1<TInput, TOutput>,
   options: EnvSchemaOptions = {},
 ) => {

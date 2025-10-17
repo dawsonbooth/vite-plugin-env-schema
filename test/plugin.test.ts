@@ -9,9 +9,9 @@ void mock.module('vite', () => ({
 }))
 
 function createMockSchema(validateResult: {
-  value?: unknown
+  value?: Record<string, unknown>
   issues?: Array<{ path?: string | readonly string[]; message: string }>
-}): StandardSchemaV1 {
+}) {
   return {
     '~standard': {
       version: 1,
@@ -26,12 +26,12 @@ function createMockSchema(validateResult: {
           }
         }
         return {
-          value: validateResult.value,
+          value: validateResult.value ?? {},
           issues: undefined,
         }
       }),
     },
-  }
+  } satisfies StandardSchemaV1<Record<string, string>, Record<string, unknown>>
 }
 
 describe('vite-plugin-env-schema', () => {
@@ -140,7 +140,7 @@ describe('vite-plugin-env-schema', () => {
           '~standard': {
             ...baseSchema['~standard'],
             validate: mock(async () => ({
-              issues: [{ path: 'API_URL', message: 'Invalid URL format' }],
+              issues: [{ path: ['API_URL'], message: 'Invalid URL format' }],
             })),
           },
         }
@@ -374,5 +374,47 @@ describe('vite-plugin-env-schema', () => {
         expect(mockLoadEnv).toHaveBeenCalledWith(mode, process.cwd(), 'VITE_')
       },
     )
+  })
+
+  describe('type constraints', () => {
+    it('should accept schemas with Record<string, string> input and any output', () => {
+      const stringToMixedSchema = {
+        '~standard': {
+          version: 1,
+          vendor: 'test',
+          validate: mock(async () => ({
+            value: {
+              PORT: 3000, // transformed to number
+              DEBUG: true, // transformed to boolean
+              API_URL: 'https://api.example.com', // stays string
+            },
+            issues: undefined,
+          })),
+        },
+      } satisfies StandardSchemaV1<
+        Record<string, string>,
+        { PORT: number; DEBUG: boolean; API_URL: string }
+      >
+
+      const plugin = envSchema(stringToMixedSchema)
+      expect(plugin).toBeDefined()
+      expect(plugin.name).toBe('vite-plugin-env-schema')
+    })
+
+    it('should reject schemas with non-string input types', () => {
+      // @ts-expect-error - should not accept schema with number input
+      envSchema({} as StandardSchemaV1<{ PORT: number }, { PORT: number }>)
+
+      // @ts-expect-error - should not accept schema with boolean input
+      envSchema({} as StandardSchemaV1<{ DEBUG: boolean }, { DEBUG: boolean }>)
+
+      envSchema(
+        // @ts-expect-error - should not accept schema with mixed string/number input
+        {} as StandardSchemaV1<
+          { API_URL: string; PORT: number },
+          { API_URL: string; PORT: number }
+        >,
+      )
+    })
   })
 })
