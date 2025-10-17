@@ -12,9 +12,9 @@ Build-time environment variable validation and injection for Vite.
 
 ## Features
 
-- 🚀 Build-time safety: catches missing or invalid `.env` values before your app runs
-- 🔄 Broad compatibility: works with Zod, Valibot, ArkType, Effect Schema, and more via Standard Schema V1
-- 🎛️ Zero-config: minimal setup required
+- Build-time safety: catches missing or invalid `.env` values before your app runs
+- Broad compatibility: works with Zod, Valibot, ArkType, Effect Schema, and more via Standard Schema V1
+- Zero-config: minimal setup required
 - Automatic injection: access validated env vars via `import env from 'virtual:env'`
 
 ## Installation
