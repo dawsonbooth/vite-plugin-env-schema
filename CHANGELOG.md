@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/dawsonbooth/vite-plugin-env-schema/compare/v1.0.1...v1.0.2) (2025-10-17)
+
+
+### Bug Fixes
+
+* constrain environment schema input type to string records ([cc91c48](https://github.com/dawsonbooth/vite-plugin-env-schema/commit/cc91c48f076ffc32f5a6972918a7213c1c755211))
+
 ## [1.0.1](https://github.com/dawsonbooth/vite-plugin-env-schema/compare/v1.0.0...v1.0.1) (2025-09-05)
 
 
